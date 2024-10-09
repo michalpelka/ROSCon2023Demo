@@ -81,13 +81,13 @@ source ~/.bashrc
 ### O3DE
 1. Refer to the [O3DE System Requirements](https://www.o3de.org/docs/welcome-guide/requirements/) documentation to make sure that the system/hardware requirements are met.
 2. Please follow the instructions to [set up O3DE from GitHub](https://o3de.org/docs/welcome-guide/setup/setup-from-github/).
-3. **Use the `main` branch (version 2310.1)**.
+3. **Use the version 2409**.
 
 The following commands should prepare O3DE (assuming that the project repository is cloned into `${WORKDIR}`):
 
 ```bash
 cd ${WORKDIR}
-git clone --branch 2310.1 --single-branch https://github.com/o3de/o3de.git
+git clone --branch stabilization/2409 --single-branch https://github.com/o3de/o3de.git
 cd o3de
 git lfs install
 git lfs pull
@@ -113,7 +113,7 @@ Note that the Gem instructions include the installation of ROS 2 with some addit
 **Use 2310.1 tag for both `o3de` and `o3de-extras` repositories:**
 ```bash
 cd ${WORKDIR}
-git clone --branch 2310.1 --single-branch https://github.com/o3de/o3de-extras
+git clone --branch stabilization/2409 --single-branch https://github.com/o3de/o3de-extras
 cd o3de-extras
 git lfs install
 git lfs pull
@@ -132,9 +132,12 @@ cd ${WORKDIR}
 git clone https://github.com/RobotecAI/o3de-humanworker-gem.git
 git clone https://github.com/RobotecAI/o3de-ur-robots-gem.git
 git clone https://github.com/RobotecAI/o3de-otto-robots-gem
+git clone https://github.com/RobotecAI/o3de-otto-robots-gem
+git clone https://github.com/RobotecAI/robotec-warehouse-assets.git 
 ./o3de/scripts/o3de.sh register --gem-path o3de-humanworker-gem
 ./o3de/scripts/o3de.sh register --gem-path o3de-ur-robots-gem
 ./o3de/scripts/o3de.sh register --gem-path o3de-otto-robots-gem
+./o3de/scripts/o3de.sh register -agp ./robotec-warehouse-assets/
 ```
 
 The Gems are open to your contributions!
@@ -287,3 +290,18 @@ Please also refer to the common [Troubleshooting Guide](https://docs.o3de.org/do
 ## Notes and acknowledgments
 
 This demo project was originally developed by [Robotec.ai](https://robotec.ai) in cooperation with [AWS Game Tech](https://aws.amazon.com/gametech/) and [AWS RoboMaker](https://aws.amazon.com/robomaker/).
+
+
+### Stereovision HIL-testing
+
+Start game launcher, following command will start the game in a windowed mode with a resolution of 960x960 pixels, and load the `demostereo` level:
+```bash
+ROSCon2023Demo/Project/build/linux/bin/profile/ROSCon2023Demo.GameLauncher -r_fullscreen=false -bg_ConnectToAssetProcessor=0 -r_width=960 -r_height=960 +LoadLevel levels/demostereo/demostereo.spawnable +r_displayInfo 1
+```
+Next, spawn NPC robots and start the ROS 2 nodes:
+
+```
+ros2 launch roscon2023_demo ROSCon2023Demo.launch.py ROS2Con2023Config:='/media/michal/xilinx/github/ROSCon2023Demo/ros2_ws/src/roscon2023_demo/config/ROSCon2023Config_stereoNPCS.yaml' use_rviz:=true
+```
+
+Finally, start the stereo vision node on the board.
